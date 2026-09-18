@@ -3,6 +3,9 @@
 
 	{$DOMAIN} {
 		encode gzip
+		request_body {
+			max_size 100MB
+		}
 		reverse_proxy dashboard:8080
 	}
 }

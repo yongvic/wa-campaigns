@@ -15,6 +15,7 @@ export class GowaError extends Error {
 interface GowaFetchInit extends RequestInit {
   /** Device-scoped endpoints need X-Device-Id. Defaults to true. */
   scoped?: boolean;
+  timeoutMs?: number;
 }
 
 interface GowaDevice {
@@ -52,11 +53,12 @@ function gowaMessage(body: unknown, status: number): string {
 }
 
 async function gowaFetch(pathname: string, init: GowaFetchInit = {}): Promise<Response> {
-  const { scoped = true, ...requestInit } = init;
+  const { scoped = true, timeoutMs = 30_000, ...requestInit } = init;
   const url = `${config.gowaBaseUrl}${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
   const headers = new Headers(requestInit.headers);
   for (const [k, v] of Object.entries(authHeader())) headers.set(k, v);
   if (!headers.has('Accept')) headers.set('Accept', 'application/json');
+  if (requestInit.body instanceof FormData) headers.delete('Content-Type');
 
   if (scoped) {
     const deviceId = await ensureDeviceId();
@@ -64,7 +66,7 @@ async function gowaFetch(pathname: string, init: GowaFetchInit = {}): Promise<Re
   }
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30_000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
     return await fetch(url, { ...requestInit, headers, signal: controller.signal });
   } finally {
@@ -252,12 +254,97 @@ export async function logoutDevice(): Promise<void> {
   await gowaJson('/app/logout');
 }
 
-export async function checkUser(phone: string): Promise<boolean> {
+export async function checkUser(phone: string, timeoutMs = 20_000): Promise<boolean> {
   const digits = phone.replace(/\D/g, '');
   const data = await gowaJson<{ results: { is_on_whatsapp: boolean } }>(
     `/user/check?phone=${encodeURIComponent(digits)}`,
+    { timeoutMs },
   );
   return Boolean(data.results?.is_on_whatsapp);
+}
+
+export interface PhoneCheckResult {
+  onWhatsApp: string[];
+  notOnWhatsApp: string[];
+  failed: Array<{ phone: string; error: string }>;
+}
+
+export async function checkUsers(phones: string[], concurrency = 6): Promise<PhoneCheckResult> {
+  const seen = new Set<string>();
+  const unique: string[] = [];
+  for (const raw of phones) {
+    const digits = String(raw).replace(/\D/g, '');
+    if (digits.length < 8 || seen.has(digits)) continue;
+    seen.add(digits);
+    unique.push(digits);
+  }
+
+  const onWhatsApp: string[] = [];
+  const notOnWhatsApp: string[] = [];
+  const failed: Array<{ phone: string; error: string }> = [];
+
+  let index = 0;
+  const workers = Array.from({ length: Math.min(concurrency, unique.length) }, async () => {
+    while (index < unique.length) {
+      const phone = unique[index++];
+      try {
+        if (await checkUser(phone)) onWhatsApp.push(phone);
+        else notOnWhatsApp.push(phone);
+      } catch (err) {
+        failed.push({
+          phone,
+          error: err instanceof Error ? err.message : 'check failed',
+        });
+      }
+    }
+  });
+  await Promise.all(workers);
+
+  return { onWhatsApp, notOnWhatsApp, failed };
+}
+
+export interface WaContact {
+  phone: string;
+  name: string;
+}
+
+function jidToPhone(jid: string): string | null {
+  const value = String(jid || '');
+  if (!value || value.includes('@g.us') || value.includes('@broadcast') || value.endsWith('@lid')) {
+    return null;
+  }
+  const user = value.split('@')[0] || '';
+  const digits = user.replace(/\D/g, '');
+  if (digits.length < 8) return null;
+  return digits;
+}
+
+export async function listContacts(): Promise<WaContact[]> {
+  const data = await gowaJson<{ results?: unknown }>('/user/my/contacts', { timeoutMs: 60_000 });
+  const results = data.results;
+  let rows: unknown[] = [];
+  if (Array.isArray(results)) {
+    rows = results;
+  } else if (results && typeof results === 'object' && Array.isArray((results as { data?: unknown }).data)) {
+    rows = (results as { data: unknown[] }).data;
+  }
+
+  const seen = new Set<string>();
+  const contacts: WaContact[] = [];
+  for (const row of rows) {
+    if (!row || typeof row !== 'object') continue;
+    const item = row as { jid?: string; id?: string; name?: string; notify?: string };
+    const phone = jidToPhone(item.jid || item.id || '');
+    if (!phone || seen.has(phone)) continue;
+    seen.add(phone);
+    contacts.push({
+      phone,
+      name: String(item.name || item.notify || '').trim() || phone,
+    });
+  }
+
+  contacts.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+  return contacts;
 }
 
 export async function sendTextMessage(phone: string, message: string): Promise<void> {
@@ -270,6 +357,38 @@ export async function sendTextMessage(phone: string, message: string): Promise<v
       message,
     }),
   });
+}
+
+export async function sendMediaMessage(opts: {
+  kind: 'image' | 'video' | 'file';
+  phone: string;
+  filePath: string;
+  filename: string;
+  mime: string;
+  caption?: string;
+}): Promise<void> {
+  const fs = await import('node:fs/promises');
+  const digits = opts.phone.replace(/\D/g, '');
+  const bytes = await fs.readFile(opts.filePath);
+  const file = new File([new Uint8Array(bytes)], opts.filename, { type: opts.mime });
+  const form = new FormData();
+  form.set('phone', `${digits}@s.whatsapp.net`);
+  const caption = opts.caption?.trim();
+  if (caption) form.set('caption', caption);
+
+  let pathname = '/send/file';
+  if (opts.kind === 'image') {
+    pathname = '/send/image';
+    form.set('image', file);
+    form.set('compress', 'true');
+  } else if (opts.kind === 'video') {
+    pathname = '/send/video';
+    form.set('video', file);
+  } else {
+    form.set('file', file);
+  }
+
+  await gowaJson(pathname, { method: 'POST', body: form, timeoutMs: 180_000 });
 }
 
 export async function fetchGowaBinary(absoluteOrPath: string): Promise<{

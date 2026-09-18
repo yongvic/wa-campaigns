@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { nanoid } from 'nanoid';
 import {
   getDb,
@@ -7,8 +8,9 @@ import {
   type CampaignStatus,
   type RecipientRow,
 } from './db.js';
-import { checkUser, sendTextMessage } from './gowa.js';
+import { checkUser, sendMediaMessage, sendTextMessage } from './gowa.js';
 import { config } from './config.js';
+import { mimeForSend, persistCampaignMedia, removeCampaignMedia, type MediaKind } from './media.js';
 
 let running = false;
 let wake: (() => void) | null = null;
@@ -42,9 +44,18 @@ export function createCampaign(input: {
   phones: string[];
   delayMinMs?: number;
   delayMaxMs?: number;
+  media?: {
+    tmpPath: string;
+    originalName: string;
+    mime: string;
+    size: number;
+    kind: MediaKind;
+  };
 }): CampaignRow {
   const message = input.message.trim();
-  if (!message) throw Object.assign(new Error('Message is required'), { status: 400 });
+  if (!input.media && !message) {
+    throw Object.assign(new Error('Message or media is required'), { status: 400 });
+  }
   if (message.length > 4096) throw Object.assign(new Error('Message too long'), { status: 400 });
 
   const seen = new Set<string>();
@@ -65,27 +76,66 @@ export function createCampaign(input: {
   const delayMax = input.delayMaxMs ?? config.campaignDelayMaxMs;
 
   const db = getDb();
-  const tx = db.transaction(() => {
-    db.prepare(
-      `INSERT INTO campaigns (
-        id, message, status, delay_min_ms, delay_max_ms,
-        total, sent, failed, skipped, pending,
-        created_at, updated_at
-      ) VALUES (?, ?, 'queued', ?, ?, ?, 0, 0, 0, ?, ?, ?)`,
-    ).run(id, message, delayMin, delayMax, phones.length, phones.length, ts, ts);
+  let mediaPath: string | null = null;
+  if (input.media) {
+    mediaPath = persistCampaignMedia(id, input.media.tmpPath, input.media.originalName);
+  }
 
-    const insert = db.prepare(
-      `INSERT INTO recipients (campaign_id, phone, status, created_at, updated_at)
-       VALUES (?, ?, 'pending', ?, ?)`,
-    );
-    for (const phone of phones) {
-      insert.run(id, phone, ts, ts);
-    }
-  });
-  tx();
+  try {
+    const tx = db.transaction(() => {
+      db.prepare(
+        `INSERT INTO campaigns (
+          id, message, status, delay_min_ms, delay_max_ms,
+          total, sent, failed, skipped, pending,
+          created_at, updated_at,
+          media_kind, media_path, media_name, media_mime, media_size
+        ) VALUES (?, ?, 'queued', ?, ?, ?, 0, 0, 0, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ).run(
+        id,
+        message,
+        delayMin,
+        delayMax,
+        phones.length,
+        phones.length,
+        ts,
+        ts,
+        input.media?.kind ?? null,
+        mediaPath,
+        input.media?.originalName ?? null,
+        input.media?.mime ?? null,
+        input.media?.size ?? null,
+      );
+
+      const insert = db.prepare(
+        `INSERT INTO recipients (campaign_id, phone, status, created_at, updated_at)
+         VALUES (?, ?, 'pending', ?, ?)`,
+      );
+      for (const phone of phones) {
+        insert.run(id, phone, ts, ts);
+      }
+    });
+    tx();
+  } catch (err) {
+    if (input.media) removeCampaignMedia(id);
+    throw err;
+  }
 
   kickWorker();
   return getCampaign(id)!;
+}
+
+export type PublicCampaign = Omit<CampaignRow, 'media_path'> & { has_media: boolean };
+
+export function toPublicCampaign(row: CampaignRow): PublicCampaign {
+  const { media_path, ...rest } = row;
+  return {
+    ...rest,
+    media_kind: rest.media_kind ?? null,
+    media_name: rest.media_name ?? null,
+    media_mime: rest.media_mime ?? null,
+    media_size: rest.media_size ?? null,
+    has_media: Boolean(media_path),
+  };
 }
 
 export function getCampaign(id: string): CampaignRow | undefined {
@@ -202,7 +252,22 @@ async function processOne(campaign: CampaignRow, recipient: RecipientRow): Promi
   recountCampaign(campaign.id);
 
   try {
-    await sendTextMessage(recipient.phone, campaign.message);
+    if (campaign.media_kind && campaign.media_path) {
+      if (!fs.existsSync(campaign.media_path)) {
+        throw new Error('Campaign media file is missing');
+      }
+      const filename = campaign.media_name || 'media';
+      await sendMediaMessage({
+        kind: campaign.media_kind,
+        phone: recipient.phone,
+        filePath: campaign.media_path,
+        filename,
+        mime: mimeForSend(campaign.media_kind, filename, campaign.media_mime || ''),
+        caption: campaign.message,
+      });
+    } else {
+      await sendTextMessage(recipient.phone, campaign.message);
+    }
     updateRecipient(recipient.id, 'sent', undefined, ts);
   } catch (err) {
     updateRecipient(

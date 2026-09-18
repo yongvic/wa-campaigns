@@ -52,7 +52,22 @@ export function initDb(): Database.Database {
       ON recipients(campaign_id, status);
   `);
 
+  migrateCampaignMediaColumns(db);
+
   return db;
+}
+
+function migrateCampaignMediaColumns(database: Database.Database): void {
+  const cols = database.prepare(`PRAGMA table_info(campaigns)`).all() as Array<{ name: string }>;
+  const names = new Set(cols.map(c => c.name));
+  const add = (name: string, ddl: string) => {
+    if (!names.has(name)) database.exec(`ALTER TABLE campaigns ADD COLUMN ${ddl}`);
+  };
+  add('media_kind', 'media_kind TEXT');
+  add('media_path', 'media_path TEXT');
+  add('media_name', 'media_name TEXT');
+  add('media_mime', 'media_mime TEXT');
+  add('media_size', 'media_size INTEGER');
 }
 
 export type CampaignStatus =
@@ -86,6 +101,11 @@ export interface CampaignRow {
   updated_at: string;
   started_at: string | null;
   finished_at: string | null;
+  media_kind: 'image' | 'video' | 'file' | null;
+  media_path: string | null;
+  media_name: string | null;
+  media_mime: string | null;
+  media_size: number | null;
 }
 
 export interface RecipientRow {

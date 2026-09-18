@@ -61,7 +61,7 @@
   },
   "campaigns": {
     "title": "Campaigns",
-    "subtitle": "Import numbers, write a text message, then send in the background.",
+    "subtitle": "Verify numbers, load your contacts, then send text, a photo, a video, or a document.",
     "stepsLabel": "Campaign steps",
     "steps": {
       "1": "Who",
@@ -73,28 +73,66 @@
     "goToConnection": "Open connection",
     "source": {
       "paste": "Paste numbers",
-      "file": "Upload CSV / TXT"
+      "file": "Upload CSV / TXT",
+      "contacts": "WhatsApp contacts"
     },
     "fields": {
       "numbers": "Phone numbers",
       "numbersPlaceholder": "One number per line\nExample:\n33612345678\n33698765432",
-      "numbersHint": "International format, digits only. Invalid numbers are skipped at send time.",
+      "numbersHint": "International format, digits only. Numbers are checked on WhatsApp before you continue.",
       "fileHint": "CSV or TXT. First column should contain phone numbers.",
+      "contactSearch": "Search contacts",
       "message": "Your message",
       "messagePlaceholder": "Write the message everyone will receive…",
-      "messageHint": "{{count}} / 4096 characters"
+      "captionPlaceholder": "Caption (optional)…",
+      "messageHint": "{{count}} / 4096 characters",
+      "messageOptionalHint": "Optional caption. {{count}} / 4096 characters",
+      "attachment": "File",
+      "attachmentHint": "Photo (JPG/PNG, 16 MB), video (MP4/MKV/AVI, 100 MB), or document (50 MB).",
+      "imageHint": "JPG or PNG, 16 MB max.",
+      "videoHint": "MP4, MKV, or AVI, 100 MB max.",
+      "docHint": "PDF, Office, ZIP… 50 MB max.",
+      "attachmentChoose": "Attach a file",
+      "attachmentChange": "Replace file",
+      "attachmentRemove": "Remove"
     },
-    "recipients": "{{count}} numbers ready",
+    "messageTypes": {
+      "text": "Text",
+      "image": "Image + text",
+      "video": "Video + text",
+      "file": "Document + text"
+    },
+    "recipients": "{{count}} numbers on WhatsApp",
     "estimate": "Estimated duration: ~{{minutes}} min",
+    "verify": {
+      "checking": "Checking {{count}} numbers on WhatsApp…",
+      "ok": "{{count}} numbers are on WhatsApp",
+      "skipped": "{{count}} not on WhatsApp",
+      "failed": "{{count}} could not be checked",
+      "skippedTitle": "Not on WhatsApp"
+    },
+    "contacts": {
+      "load": "Load contacts",
+      "loading": "Loading contacts…",
+      "ready": "{{count}} contacts",
+      "selected": "{{count}} selected",
+      "empty": "No contacts found on this account.",
+      "selectAll": "Select all",
+      "selectNone": "Clear selection",
+      "useSelection": "Use selection"
+    },
     "review": {
       "recipients": "Recipients",
-      "message": "Message preview"
+      "message": "Message preview",
+      "attachment": "Attachment",
+      "captionOnly": "No caption — the file will be sent as-is"
     },
     "actions": {
       "parse": "Use these numbers",
       "start": "Start campaign",
       "cancel": "Cancel campaign",
-      "new": "New campaign"
+      "new": "New campaign",
+      "retryCheck": "Retry failed checks"
     },
     "progress": {
       "title": "Campaign in progress",
@@ -110,8 +148,21 @@
     },
     "errors": {
       "noNumbers": "Add at least one phone number.",
-      "noMessage": "Write a message before sending.",
-      "startFailed": "Could not start the campaign."
+      "noMessage": "Write a message or attach a file.",
+      "noneOnWhatsApp": "None of these numbers are on WhatsApp.",
+      "checkFailed": "Could not check the numbers.",
+      "contactsFailed": "Could not load WhatsApp contacts.",
+      "noSelection": "Select at least one contact.",
+      "needMedia": "Attach a file for this message type.",
+      "wrongMediaType": "This file does not match the selected type.",
+      "startFailed": "Could not start the campaign.",
+      "fileType": "This file type is not allowed.",
+      "fileTooLarge": "File is too large (max {{max}} MB for {{kind}})."
+    },
+    "mediaKind": {
+      "image": "photo",
+      "video": "video",
+      "file": "document"
     }
   }
 }

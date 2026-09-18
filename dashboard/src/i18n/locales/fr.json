@@ -61,7 +61,7 @@
   },
   "campaigns": {
     "title": "Campagnes",
-    "subtitle": "Importez des numéros, rédigez un texte, puis lancez l’envoi en arrière-plan.",
+    "subtitle": "Vérifiez les numéros, chargez vos contacts, puis envoyez un texte, une photo, une vidéo ou un document.",
     "stepsLabel": "Étapes",
     "steps": {
       "1": "Destinataires",
@@ -73,28 +73,66 @@
     "goToConnection": "Ouvrir la connexion",
     "source": {
       "paste": "Coller des numéros",
-      "file": "Importer CSV / TXT"
+      "file": "Importer CSV / TXT",
+      "contacts": "Contacts WhatsApp"
     },
     "fields": {
       "numbers": "Numéros de téléphone",
       "numbersPlaceholder": "Un numéro par ligne\nExemple :\n33612345678\n33698765432",
-      "numbersHint": "Format international, chiffres seuls. Les numéros invalides sont ignorés à l’envoi.",
+      "numbersHint": "Format international, chiffres seuls. Les numéros sont vérifiés sur WhatsApp avant de continuer.",
       "fileHint": "CSV ou TXT. La première colonne doit contenir les numéros.",
+      "contactSearch": "Rechercher un contact",
       "message": "Votre message",
       "messagePlaceholder": "Écrivez le message que tout le monde recevra…",
-      "messageHint": "{{count}} / 4096 caractères"
+      "captionPlaceholder": "Légende (optionnel)…",
+      "messageHint": "{{count}} / 4096 caractères",
+      "messageOptionalHint": "Légende optionnelle. {{count}} / 4096 caractères",
+      "attachment": "Fichier",
+      "attachmentHint": "Photo (JPG/PNG, 16 Mo), vidéo (MP4/MKV/AVI, 100 Mo) ou document (50 Mo).",
+      "imageHint": "JPG ou PNG, 16 Mo maximum.",
+      "videoHint": "MP4, MKV ou AVI, 100 Mo maximum.",
+      "docHint": "PDF, Office, ZIP… 50 Mo maximum.",
+      "attachmentChoose": "Joindre un fichier",
+      "attachmentChange": "Remplacer le fichier",
+      "attachmentRemove": "Retirer"
     },
-    "recipients": "{{count}} numéros prêts",
+    "messageTypes": {
+      "text": "Texte",
+      "image": "Image + texte",
+      "video": "Vidéo + texte",
+      "file": "Document + texte"
+    },
+    "recipients": "{{count}} numéros sur WhatsApp",
     "estimate": "Durée estimée : ~{{minutes}} min",
+    "verify": {
+      "checking": "Vérification de {{count}} numéros sur WhatsApp…",
+      "ok": "{{count}} numéros sont sur WhatsApp",
+      "skipped": "{{count}} absents de WhatsApp",
+      "failed": "{{count}} non vérifiés (erreur)",
+      "skippedTitle": "Absents de WhatsApp"
+    },
+    "contacts": {
+      "load": "Charger les contacts",
+      "loading": "Chargement des contacts…",
+      "ready": "{{count}} contacts",
+      "selected": "{{count}} sélectionnés",
+      "empty": "Aucun contact trouvé sur ce compte.",
+      "selectAll": "Tout sélectionner",
+      "selectNone": "Tout désélectionner",
+      "useSelection": "Utiliser la sélection"
+    },
     "review": {
       "recipients": "Destinataires",
-      "message": "Aperçu du message"
+      "message": "Aperçu du message",
+      "attachment": "Pièce jointe",
+      "captionOnly": "Sans légende — le fichier sera envoyé tel quel"
     },
     "actions": {
       "parse": "Utiliser ces numéros",
       "start": "Lancer la campagne",
       "cancel": "Annuler la campagne",
-      "new": "Nouvelle campagne"
+      "new": "Nouvelle campagne",
+      "retryCheck": "Réessayer les erreurs"
     },
     "progress": {
       "title": "Campagne en cours",
@@ -110,8 +148,21 @@
     },
     "errors": {
       "noNumbers": "Ajoutez au moins un numéro.",
-      "noMessage": "Rédigez un message avant d’envoyer.",
-      "startFailed": "Impossible de démarrer la campagne."
+      "noMessage": "Rédigez un message ou joignez un fichier.",
+      "noneOnWhatsApp": "Aucun de ces numéros n’est sur WhatsApp.",
+      "checkFailed": "Impossible de vérifier les numéros.",
+      "contactsFailed": "Impossible de charger les contacts WhatsApp.",
+      "noSelection": "Sélectionnez au moins un contact.",
+      "needMedia": "Joignez un fichier pour ce type de message.",
+      "wrongMediaType": "Ce fichier ne correspond pas au type choisi.",
+      "startFailed": "Impossible de démarrer la campagne.",
+      "fileType": "Ce type de fichier n’est pas autorisé.",
+      "fileTooLarge": "Fichier trop volumineux (max {{max}} Mo pour {{kind}})."
+    },
+    "mediaKind": {
+      "image": "photo",
+      "video": "vidéo",
+      "file": "document"
     }
   }
 }

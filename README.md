@@ -21,10 +21,10 @@ Le navigateur n’appelle **jamais** GOWA directement : uniquement `/api/*` sur 
 
 - Login / mot de passe (un utilisateur)
 - Connexion WhatsApp : QR + statut (proxy)
-- Campagnes : CSV ou collage de numéros, message texte
-- File d’attente serveur (SQLite) : check `/user/check`, envoi `/send/message`, délai aléatoire, reprise après redémarrage
+- Campagnes : CSV, collage ou carnet WhatsApp, vérification `/user/check`, texte / image / vidéo / document
+- File d’attente serveur (SQLite) : check `/user/check`, envoi `/send/message` ou `/send/image|video|file`, délai aléatoire, reprise après redémarrage
 
-Hors scope v1 : templates, médias, carnet WhatsApp, multi-numéros.
+Hors scope v1 : templates, multi-numéros.
 
 ## Prérequis
 
@@ -132,7 +132,8 @@ Voir [`.env.example`](.env.example).
 | `GOWA_BASE_URL` | URL interne (`http://gowa:3000` en compose) |
 | `GOWA_DEVICE_ID` | Slot GOWA pour le QR et l’envoi (`main` par défaut, créé si absent) |
 | `CAMPAIGN_DELAY_MIN_MS` / `MAX` | Délai aléatoire entre envois (défaut 3–10 s) |
-| `DATA_DIR` | Fichier SQLite des campagnes |
+| `MEDIA_MAX_UPLOAD_BYTES` | Taille max d’upload (défaut 100 Mo). Caps : image 16 Mo, vidéo 100 Mo, fichier 50 Mo |
+| `DATA_DIR` | SQLite des campagnes + fichiers médias |
 
 ## Sécurité
 

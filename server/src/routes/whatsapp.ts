@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth.js';
 import {
+  checkUsers,
   fetchGowaBinary,
   getLoginQr,
   getStatus,
   GowaError,
+  listContacts,
   logoutDevice,
 } from '../gowa.js';
 
@@ -57,6 +59,39 @@ whatsappRouter.get('/qr-image', async (_req, res) => {
     const statusCode = err instanceof GowaError ? err.status : 502;
     res.status(statusCode).json({
       error: err instanceof Error ? err.message : 'Failed to fetch QR image',
+    });
+  }
+});
+
+whatsappRouter.post('/check', async (req, res) => {
+  try {
+    const phones = Array.isArray(req.body?.phones) ? req.body.phones.map(String) : [];
+    if (phones.length === 0) {
+      res.status(400).json({ error: 'At least one phone number is required' });
+      return;
+    }
+    if (phones.length > 2000) {
+      res.status(400).json({ error: 'Too many numbers (max 2000)' });
+      return;
+    }
+    const result = await checkUsers(phones);
+    res.json(result);
+  } catch (err) {
+    const statusCode = err instanceof GowaError ? err.status : 502;
+    res.status(statusCode).json({
+      error: err instanceof Error ? err.message : 'Failed to check numbers',
+    });
+  }
+});
+
+whatsappRouter.get('/contacts', async (_req, res) => {
+  try {
+    const contacts = await listContacts();
+    res.json({ contacts });
+  } catch (err) {
+    const statusCode = err instanceof GowaError ? err.status : 502;
+    res.status(statusCode).json({
+      error: err instanceof Error ? err.message : 'Failed to load contacts',
     });
   }
 });
