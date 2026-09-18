@@ -118,7 +118,7 @@ docker compose up -d gowa
 | `VPS_SSH_KEY` | Clé privée SSH (contenu PEM) |
 | `VPS_DEPLOY_PATH` | Chemin absolu du clone (ex. `/opt/wa-campaigns`) |
 
-Sur le VPS : clé publique dans `~/.ssh/authorized_keys`, Docker installé, `.env` déjà présent (jamais commité).
+Sur le VPS : clé publique dans `~/.ssh/authorized_keys`, Docker installé, `.env` déjà présent (jamais committé).
 
 ## Variables d’environnement
 
