@@ -1,0 +1,117 @@
+{
+  "common": {
+    "appName": "WA Campaigns",
+    "appSubtitle": "Campagnes WhatsApp",
+    "loading": "Chargement…",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "submit": "Envoyer",
+    "back": "Retour",
+    "next": "Suivant",
+    "expand": "Déplier",
+    "collapse": "Replier",
+    "logout": "Déconnexion",
+    "refresh": "Actualiser",
+    "retry": "Réessayer",
+    "language": "Langue",
+    "username": "Identifiant",
+    "password": "Mot de passe",
+    "accountMenu": "Compte",
+    "offlineBanner": "Pas d’internet. L’envoi reprendra une fois reconnecté.",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "connected": "Connecté",
+    "disconnected": "Déconnecté"
+  },
+  "theme": {
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système",
+    "label": "Thème : {{value}}",
+    "appearance": "Apparence",
+    "mode": "Mode",
+    "palette": "Palette"
+  },
+  "nav": {
+    "campaigns": "Campagnes",
+    "connection": "Connexion"
+  },
+  "login": {
+    "title": "Connexion",
+    "subtitle": "Entrez les identifiants du dashboard.",
+    "usernameRequired": "Identifiant requis.",
+    "passwordRequired": "Mot de passe requis.",
+    "invalidCredentials": "Identifiant ou mot de passe incorrect.",
+    "connectionError": "Serveur injoignable. Vérifiez qu’il tourne.",
+    "connect": "Se connecter",
+    "connecting": "Vérification…"
+  },
+  "connection": {
+    "title": "Connexion WhatsApp",
+    "subtitle": "Scannez le QR code avec le téléphone qui enverra les messages.",
+    "statusConnected": "WhatsApp est connecté et prêt à envoyer.",
+    "statusDisconnected": "Non connecté. Scannez le QR code ci-dessous.",
+    "statusPartial": "Connecté aux serveurs WhatsApp, mais pas encore authentifié.",
+    "jid": "Compte",
+    "refreshQr": "Rafraîchir le QR",
+    "logout": "Déconnecter WhatsApp",
+    "loadingQr": "Chargement du QR…",
+    "qrError": "Impossible de charger le QR code.",
+    "qrHint": "WhatsApp → Appareils connectés → Connecter un appareil"
+  },
+  "campaigns": {
+    "title": "Campagnes",
+    "subtitle": "Importez des numéros, rédigez un texte, puis lancez l’envoi en arrière-plan.",
+    "stepsLabel": "Étapes",
+    "steps": {
+      "1": "Destinataires",
+      "2": "Message",
+      "3": "Envoi"
+    },
+    "noConnectionTitle": "WhatsApp n’est pas connecté",
+    "noConnectionDesc": "Connectez d’abord votre numéro avant de lancer une campagne.",
+    "goToConnection": "Ouvrir la connexion",
+    "source": {
+      "paste": "Coller des numéros",
+      "file": "Importer CSV / TXT"
+    },
+    "fields": {
+      "numbers": "Numéros de téléphone",
+      "numbersPlaceholder": "Un numéro par ligne\nExemple :\n33612345678\n33698765432",
+      "numbersHint": "Format international, chiffres seuls. Les numéros invalides sont ignorés à l’envoi.",
+      "fileHint": "CSV ou TXT. La première colonne doit contenir les numéros.",
+      "message": "Votre message",
+      "messagePlaceholder": "Écrivez le message que tout le monde recevra…",
+      "messageHint": "{{count}} / 4096 caractères"
+    },
+    "recipients": "{{count}} numéros prêts",
+    "estimate": "Durée estimée : ~{{minutes}} min",
+    "review": {
+      "recipients": "Destinataires",
+      "message": "Aperçu du message"
+    },
+    "actions": {
+      "parse": "Utiliser ces numéros",
+      "start": "Lancer la campagne",
+      "cancel": "Annuler la campagne",
+      "new": "Nouvelle campagne"
+    },
+    "progress": {
+      "title": "Campagne en cours",
+      "sent": "Envoyés",
+      "failed": "Échoués",
+      "skipped": "Ignorés",
+      "pending": "En attente",
+      "status": "Statut : {{status}}"
+    },
+    "done": {
+      "title": "Campagne terminée",
+      "summary": "{{sent}} envoyés · {{failed}} échoués · {{skipped}} ignorés"
+    },
+    "errors": {
+      "noNumbers": "Ajoutez au moins un numéro.",
+      "noMessage": "Rédigez un message avant d’envoyer.",
+      "startFailed": "Impossible de démarrer la campagne."
+    }
+  }
+}

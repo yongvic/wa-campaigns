@@ -1,0 +1,117 @@
+{
+  "common": {
+    "appName": "WA Campaigns",
+    "appSubtitle": "WhatsApp campaigns",
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "close": "Close",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "logout": "Logout",
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "language": "Language",
+    "username": "Username",
+    "password": "Password",
+    "accountMenu": "Account",
+    "offlineBanner": "No internet. Sending is paused until you are back online.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "connected": "Connected",
+    "disconnected": "Disconnected"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "label": "Theme: {{value}}",
+    "appearance": "Appearance",
+    "mode": "Mode",
+    "palette": "Palette"
+  },
+  "nav": {
+    "campaigns": "Campaigns",
+    "connection": "Connection"
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Enter your dashboard credentials.",
+    "usernameRequired": "Username is required.",
+    "passwordRequired": "Password is required.",
+    "invalidCredentials": "Invalid username or password.",
+    "connectionError": "Cannot reach the server. Check that it is running.",
+    "connect": "Sign in",
+    "connecting": "Checking…"
+  },
+  "connection": {
+    "title": "WhatsApp connection",
+    "subtitle": "Scan the QR code with your phone to pair the sending number.",
+    "statusConnected": "WhatsApp is connected and ready to send.",
+    "statusDisconnected": "Not connected. Scan the QR code below.",
+    "statusPartial": "Connected to WhatsApp servers but not logged in yet.",
+    "jid": "Account",
+    "refreshQr": "Refresh QR",
+    "logout": "Disconnect WhatsApp",
+    "loadingQr": "Loading QR code…",
+    "qrError": "Could not load QR code.",
+    "qrHint": "WhatsApp → Linked devices → Link a device"
+  },
+  "campaigns": {
+    "title": "Campaigns",
+    "subtitle": "Import numbers, write a text message, then send in the background.",
+    "stepsLabel": "Campaign steps",
+    "steps": {
+      "1": "Who",
+      "2": "Message",
+      "3": "Send"
+    },
+    "noConnectionTitle": "WhatsApp is not connected",
+    "noConnectionDesc": "Connect your number first before starting a campaign.",
+    "goToConnection": "Open connection",
+    "source": {
+      "paste": "Paste numbers",
+      "file": "Upload CSV / TXT"
+    },
+    "fields": {
+      "numbers": "Phone numbers",
+      "numbersPlaceholder": "One number per line\nExample:\n33612345678\n33698765432",
+      "numbersHint": "International format, digits only. Invalid numbers are skipped at send time.",
+      "fileHint": "CSV or TXT. First column should contain phone numbers.",
+      "message": "Your message",
+      "messagePlaceholder": "Write the message everyone will receive…",
+      "messageHint": "{{count}} / 4096 characters"
+    },
+    "recipients": "{{count}} numbers ready",
+    "estimate": "Estimated duration: ~{{minutes}} min",
+    "review": {
+      "recipients": "Recipients",
+      "message": "Message preview"
+    },
+    "actions": {
+      "parse": "Use these numbers",
+      "start": "Start campaign",
+      "cancel": "Cancel campaign",
+      "new": "New campaign"
+    },
+    "progress": {
+      "title": "Campaign in progress",
+      "sent": "Sent",
+      "failed": "Failed",
+      "skipped": "Skipped",
+      "pending": "Pending",
+      "status": "Status: {{status}}"
+    },
+    "done": {
+      "title": "Campaign finished",
+      "summary": "{{sent}} sent · {{failed}} failed · {{skipped}} skipped"
+    },
+    "errors": {
+      "noNumbers": "Add at least one phone number.",
+      "noMessage": "Write a message before sending.",
+      "startFailed": "Could not start the campaign."
+    }
+  }
+}

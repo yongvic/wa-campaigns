@@ -1,0 +1,75 @@
+services:
+  gowa:
+    image: ${GOWA_IMAGE:-aldinokemal2104/go-whatsapp-web-multidevice:v9.0.1}
+    container_name: wa-campaigns-gowa
+    restart: unless-stopped
+    command: ["rest"]
+    environment:
+      APP_PORT: "3000"
+      APP_HOST: "0.0.0.0"
+      APP_DEBUG: "false"
+      APP_OS: "WACampaigns"
+      APP_BASIC_AUTH: ${GOWA_BASIC_AUTH}
+      APP_UI_ENABLED: "false"
+    volumes:
+      - gowa_storages:/app/storages
+    networks:
+      - internal
+    # Intentionally no ports: — not reachable from the host / internet
+
+  dashboard:
+    build: .
+    container_name: wa-campaigns-dashboard
+    restart: unless-stopped
+    depends_on:
+      - gowa
+    environment:
+      NODE_ENV: production
+      PORT: "8080"
+      DATA_DIR: /app/data
+      STATIC_DIR: /app/dashboard/dist
+      DASHBOARD_USER: ${DASHBOARD_USER}
+      DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET}
+      GOWA_BASE_URL: http://gowa:3000
+      GOWA_BASIC_AUTH: ${GOWA_BASIC_AUTH}
+      CAMPAIGN_DELAY_MIN_MS: ${CAMPAIGN_DELAY_MIN_MS:-3000}
+      CAMPAIGN_DELAY_MAX_MS: ${CAMPAIGN_DELAY_MAX_MS:-10000}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    volumes:
+      - dashboard_data:/app/data
+    networks:
+      - internal
+    ports:
+      # Used when HTTPS/Caddy is disabled (default for first boot without a domain)
+      - "${DASHBOARD_HOST_PORT:-8080}:8080"
+
+  caddy:
+    image: caddy:2.9-alpine
+    container_name: wa-campaigns-caddy
+    restart: unless-stopped
+    profiles: ["https"]
+    depends_on:
+      - dashboard
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  gowa_storages:
+  dashboard_data:
+  caddy_data:
+  caddy_config:

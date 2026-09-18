@@ -1,0 +1,6 @@
+# Keep dashboard port private when Caddy terminates TLS.
+# Example override: docker compose -f docker-compose.yml -f docker-compose.https.yml --profile https up -d
+
+services:
+  dashboard:
+    ports: !reset []

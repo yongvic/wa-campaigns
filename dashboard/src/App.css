@@ -1,0 +1,316 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+:root {
+  --primary: #25d366;
+  --primary-hover: #1da851;
+  --primary-soft: rgba(37, 211, 102, 0.12);
+  --bg-light: #f8fafc;
+  --bg-white: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #0f172a; /* Slate 900 */
+  --text-secondary: #475569; /* Slate 600 */
+  --text-muted: #64748b; /* Slate 500 — 4.6:1 on white, usable as body secondary */
+  --border: #e2e8f0; /* Slate 200 */
+  --error: #dc2626;
+  --success: #15803d;
+  --warning: #b45309;
+  --info: #2563eb; /* Blue 600 — info/permission/log badges + qr-ready pill; no palette blue token */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --radius: 10px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --touch: 44px;
+}
+
+[data-palette='blue'] {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-soft: rgba(37, 99, 235, 0.12);
+}
+
+[data-palette='graphite'] {
+  --primary: #64748b;
+  --primary-hover: #475569;
+  --primary-soft: rgba(100, 116, 139, 0.14);
+}
+
+[data-palette='indigo'] {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-soft: rgba(79, 70, 229, 0.12);
+}
+
+[data-palette='amber'] {
+  --primary: #d97706;
+  --primary-hover: #b45309;
+  --primary-soft: rgba(217, 119, 6, 0.13);
+}
+
+[data-palette='rose'] {
+  --primary: #e11d48;
+  --primary-hover: #be123c;
+  --primary-soft: rgba(225, 29, 72, 0.12);
+}
+
+[data-palette='teal'] {
+  --primary: #0d9488;
+  --primary-hover: #0f766e;
+  --primary-soft: rgba(13, 148, 136, 0.12);
+}
+
+/* Dark Mode */
+[data-theme='dark'] {
+  /* Make native controls (select option popups, scrollbars, date pickers) follow the EXPLICIT
+     app theme, not just the OS preference — otherwise toggling dark while the OS is light left
+     native dropdowns rendered in the light scheme (#249). */
+  color-scheme: dark;
+  --bg-light: #0f172a; /* Slate 900 */
+  --bg-white: #1e293b; /* Slate 800 */
+  --bg-card: #1e293b;
+  --text-primary: #f1f5f9; /* Slate 100 */
+  --text-secondary: #cbd5e1; /* Slate 300 */
+  --text-muted: #94a3b8; /* Slate 400 — readable secondary on slate 800 */
+  --border: #334155; /* Slate 700 */
+  --info: #60a5fa; /* Blue 400 — lighter so it reads over the dark translucent-blue tints */
+  --primary-soft: color-mix(in srgb, var(--primary) 18%, transparent);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}
+
+/* Explicit light toggle: keep native controls light even if the OS prefers dark. */
+[data-theme='light'] {
+  color-scheme: light;
+}
+
+/* System preference dark mode */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    /* Match native controls (e.g. the Login page <select> option popup) to the dark theme.
+       The Login screen never sets data-theme, so it relies solely on this block — without an
+       explicit color-scheme the popup rendered light, leaving the light option text illegible (#249). */
+    color-scheme: dark;
+    --bg-light: #0f172a;
+    --bg-white: #1e293b;
+    --bg-card: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --info: #60a5fa;
+    --primary-soft: color-mix(in srgb, var(--primary) 18%, transparent);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    'Plus Jakarta Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-light);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+button {
+  font-family: inherit;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  background: var(--bg-white);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Error banner — shared across pages (moved out of Plugins.css so any page can use it). */
+.error-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.error-banner svg {
+  color: var(--error);
+}
+
+.error-banner-text {
+  color: var(--error);
+}
+
+/* yarl theme — match dashboard dark palette. */
+.yarl__container { --yarl__color_backdrop: rgba(0, 0, 0, 0.92); }
+.yarl__button   { --yarl__color_button: rgba(255, 255, 255, 0.9); }
+
+/* ==================== Global button system ==================== */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: var(--touch);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.25;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: 2px solid var(--primary);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: var(--bg-white);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+  color: var(--text-primary);
+  background: var(--primary-soft);
+}
+
+.btn-secondary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background: var(--error);
+  color: #fff;
+  border: 2px solid var(--error);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-danger:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-danger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-link {
+  padding: 0.375rem 0.625rem;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.btn-link:hover:not(:disabled) {
+  background: var(--primary-soft);
+  text-decoration: none;
+}
+
+.btn-link:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary.btn-lg,
+.btn-secondary.btn-lg,
+.btn-danger.btn-lg {
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-link {
+    transition: none;
+  }
+
+  .btn-primary:active:not(:disabled),
+  .btn-secondary:active:not(:disabled),
+  .btn-danger:active:not(:disabled) {
+    transform: none;
+  }
+}
