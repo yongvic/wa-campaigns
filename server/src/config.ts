@@ -17,6 +17,7 @@ export const config = {
   dataDir: process.env.DATA_DIR || path.resolve(process.cwd(), 'data'),
   gowaBaseUrl: (process.env.GOWA_BASE_URL || 'http://127.0.0.1:3000').replace(/\/$/, ''),
   gowaBasicAuth: process.env.GOWA_BASIC_AUTH || '',
+  gowaDeviceId: (process.env.GOWA_DEVICE_ID || 'main').trim() || 'main',
   campaignDelayMinMs: intEnv('CAMPAIGN_DELAY_MIN_MS', 3000),
   campaignDelayMaxMs: intEnv('CAMPAIGN_DELAY_MAX_MS', 10000),
   version: process.env.APP_VERSION || '1.0.0',

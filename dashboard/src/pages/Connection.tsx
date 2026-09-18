@@ -60,6 +60,7 @@ export function Connection() {
   };
 
   const statusText = (() => {
+    if (statusQuery.isError) return t('connection.statusDisconnected');
     if (!statusQuery.data) return t('common.loading');
     if (statusQuery.data.is_logged_in) return t('connection.statusConnected');
     if (statusQuery.data.is_connected) return t('connection.statusPartial');

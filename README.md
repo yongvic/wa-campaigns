@@ -130,6 +130,7 @@ Voir [`.env.example`](.env.example).
 | `SESSION_SECRET` | Signature du cookie de session |
 | `GOWA_BASIC_AUTH` | `user:pass` Basic Auth GOWA (interne) |
 | `GOWA_BASE_URL` | URL interne (`http://gowa:3000` en compose) |
+| `GOWA_DEVICE_ID` | Slot GOWA pour le QR et l’envoi (`main` par défaut, créé si absent) |
 | `CAMPAIGN_DELAY_MIN_MS` / `MAX` | Délai aléatoire entre envois (défaut 3–10 s) |
 | `DATA_DIR` | Fichier SQLite des campagnes |
 
